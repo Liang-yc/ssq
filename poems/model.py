@@ -21,7 +21,7 @@ import numpy as np
 
 
 def rnn_model(model, input_data, output_data, vocab_size, rnn_size=128, num_layers=2, batch_size=64,
-              learning_rate=0.01,use_cnn=True):
+              output_num=1, learning_rate=0.01,use_cnn=True):
     """
     construct rnn seq2seq model.
     :param model: model class
@@ -53,24 +53,40 @@ def rnn_model(model, input_data, output_data, vocab_size, rnn_size=128, num_laye
     if use_cnn:
         with tf.name_scope('fc1'):
             fc1_weights = tf.Variable(  # fully connected, depth 512.
-                tf.truncated_normal([7, 512],
+                tf.truncated_normal([7, 128],
                                     # mean=1.0,
                                     stddev=0.1,
                                     dtype=tf.float32))
-            fc1_biases = tf.Variable(tf.constant(1.0, shape=[512], dtype=tf.float32))
+            fc1_biases = tf.Variable(tf.constant(1.0, shape=[128], dtype=tf.float32))
             fc1 = tf.nn.relu(tf.matmul(tf.to_float(input_data), fc1_weights) + fc1_biases)
         with tf.name_scope('fc2'):
             fc2_weights = tf.Variable(  # fully connected, depth 512.
-                tf.truncated_normal([512, 128*7],
+                tf.truncated_normal([128, 256],
                                     # mean=1.0,
                                     stddev=0.1,
                                     dtype=tf.float32))
-            fc2_biases = tf.Variable(tf.constant(1.0, shape=[128*7], dtype=tf.float32))
-            fc2 = tf.nn.relu(tf.matmul(fc1, fc2_weights) + fc2_biases)
+            fc2_biases = tf.Variable(tf.constant(1.0, shape=[256], dtype=tf.float32))
+            fc2 = tf.nn.relu(tf.matmul(tf.to_float(fc1), fc2_weights) + fc2_biases)
+        with tf.name_scope('fc3'):
+            fc3_weights = tf.Variable(  # fully connected, depth 512.
+                tf.truncated_normal([256, 512],
+                                    # mean=1.0,
+                                    stddev=0.1,
+                                    dtype=tf.float32))
+            fc3_biases = tf.Variable(tf.constant(1.0, shape=[512], dtype=tf.float32))
+            fc3 = tf.nn.relu(tf.matmul(tf.to_float(fc2), fc3_weights) + fc3_biases)
+        with tf.name_scope('fc4'):
+            fc4_weights = tf.Variable(  # fully connected, depth 512.
+                tf.truncated_normal([512, 128*output_num],
+                                    # mean=1.0,
+                                    stddev=0.1,
+                                    dtype=tf.float32))
+            fc4_biases = tf.Variable(tf.constant(1.0, shape=[128*output_num], dtype=tf.float32))
+            fc4 = tf.nn.relu(tf.matmul(fc3, fc4_weights) + fc4_biases)
 
 
         # [batch_size, ?, rnn_size] = [64, ?, 128]
-        embedded=tf.reshape(fc2,[batch_size,-1,128])
+        embedded=tf.reshape(fc4,[batch_size,-1,128])
         outputs, last_state = tf.nn.dynamic_rnn(cell, embedded, initial_state=initial_state)
     else:
         with tf.device("/cpu:0"):
