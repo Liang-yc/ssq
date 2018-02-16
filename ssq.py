@@ -22,7 +22,7 @@ import tensorflow as tf
 from poems.model import rnn_model
 from poems.poems import process_poems, generate_batch
 from ssq_data import *
-tf.app.flags.DEFINE_integer('batch_size', 1600, 'batch size.')
+tf.app.flags.DEFINE_integer('batch_size', -1, 'batch size.')
 tf.app.flags.DEFINE_float('learning_rate', 0.0001, 'learning rate.')
 tf.app.flags.DEFINE_string('model_dir', os.path.abspath('./model'), 'model save path.')
 tf.app.flags.DEFINE_string('file_path', os.path.abspath('./data/poems.txt'), 'file name of poems.')
@@ -41,13 +41,15 @@ def run_training():
     ssqdata=get_exl_data(random_order=True)
     batches_inputs=ssqdata[0:(len(ssqdata)-1)]
     batches_outputs = ssqdata[1:(len(ssqdata))]
+    FLAGS.batch_size=len(ssqdata)-1
     # data=batches_outputs[1:7]
     # print(len(data))
     del ssqdata
     input_data = tf.placeholder(tf.int32, [FLAGS.batch_size, None])
     # print(tf.shape(input_data))
     output_targets = tf.placeholder(tf.int32, [FLAGS.batch_size, None])
-    end_points = rnn_model(model='lstm', input_data=input_data, output_data=output_targets, vocab_size=33,
+    end_points = rnn_model(model='lstm', input_data=input_data, output_data=output_targets, vocab_size=33+16,
+                           output_num=7,
                            rnn_size=128, num_layers=7, batch_size=FLAGS.batch_size, learning_rate=FLAGS.learning_rate)
     # end_points = rnn_model(model='lstm', input_data=input_data, output_data=output_targets, vocab_size=len(
     #     vocabularies), rnn_size=128, num_layers=2, batch_size=64, learning_rate=FLAGS.learning_rate)
