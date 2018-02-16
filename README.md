@@ -1,4 +1,4 @@
-# 利用神经网路和LSTM预测双色球(How To predict the China's UnionLotto with Neural Network and LSTM)
+P# 利用神经网路和LSTM预测双色球(How To predict the China's Union Lotto with Neural Network and LSTM)
 ## 背景(Background)
 ------
 这个项目是通过结合神经网络和Long Short-Term Memory(LSTM)完成双色球预测。关于双色球的介绍，在此处不在赘述（参见[网站](https://baike.baidu.com/item/中国福利彩票双色球/8676030?fr=aladdin&fromid=75279&fromtitle=%E5%8F%8C%E8%89%B2%E7%90%83)）。该项目以真实的双色球开奖结果作为输入（7个数值，其中前6个表示红号，最后一个表示蓝号），输出预测结果（输出仍为7个数值，其中前6个表示红号，最后一个表示蓝号）。目前该项目还处于开发中。<br><br>
