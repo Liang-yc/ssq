@@ -42,7 +42,7 @@ def run_training():
     # poems_vector, word_to_int, vocabularies = process_poems(FLAGS.file_path)
     # batches_inputs, batches_outputs = generate_batch(FLAGS.batch_size, poems_vector, word_to_int)
     # ssqdata=get_exl_data(random_order=True,use_resnet=True)
-    ssqdata = get_blue(use_resnet=True)
+    ssqdata = get_blue()
     # print(ssqdata[len(ssqdata)-1])
     batches_inputs=ssqdata[0:(len(ssqdata)-1)]
     ssqdata=get_blue()
@@ -51,7 +51,7 @@ def run_training():
     # data=batches_outputs[1:7]
     # print(len(data))
     del ssqdata
-    input_data = tf.placeholder(tf.float32, [FLAGS.batch_size, 1])
+    input_data = tf.placeholder(tf.int32, [FLAGS.batch_size, None])
 
     # print(tf.shape(input_data))
     output_targets = tf.placeholder(tf.int32, [FLAGS.batch_size, None])
