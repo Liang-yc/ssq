@@ -46,3 +46,46 @@ def get_exl_data(exl_path='./ssq.xls',random_order=False):
                 xls_data['data'][i][8] +32])
             ssq_data.append(temp)
     return ssq_data
+
+
+def get_red(exl_path='./ssq.xls', random_order=False):
+    ssq_data=[]
+    xls_data = get_data(exl_path)
+    # print(type(xls_data))
+    if random_order:
+        for i in range(2, len(xls_data['data'])):
+            # print(type(xls_data['data'][i][2]))
+            # aaaa=xls_data['data'][i][2]
+            temp = np.asarray([
+                xls_data['data'][i][9]-1,
+                 xls_data['data'][i][10]-1,
+                 xls_data['data'][i][11]-1,
+                 xls_data['data'][i][12]-1,
+                 xls_data['data'][i][13]-1,
+                 xls_data['data'][i][14]-1])
+            ssq_data.append(temp)
+    else:
+        for i in range(2, len(xls_data['data'])):
+            # print(type(xls_data['data'][i][2]))
+            # aaaa=xls_data['data'][i][2]
+            temp = np.asarray([
+                xls_data['data'][i][2] - 1,
+                xls_data['data'][i][3] - 1,
+                xls_data['data'][i][4] - 1,
+                xls_data['data'][i][5] - 1,
+                xls_data['data'][i][6] - 1,
+                xls_data['data'][i][7] - 1])
+            ssq_data.append(temp)
+    return ssq_data
+
+def get_blue(exl_path='./ssq.xls'):
+    ssq_data=[]
+    xls_data = get_data(exl_path)
+
+    for i in range(2, len(xls_data['data'])):
+        # print(type(xls_data['data'][i][2]))
+        # aaaa=xls_data['data'][i][2]
+        temp = np.asarray([
+            xls_data['data'][i][8]-1])
+        ssq_data.append(temp)
+    return ssq_data
