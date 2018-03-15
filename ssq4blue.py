@@ -20,7 +20,6 @@ import os
 import numpy as np
 import tensorflow as tf
 from poems.model import rnn_model
-from poems.resnet import *
 from poems.poems import process_poems, generate_batch
 from ssq_data import *
 # for Windows10：OSError: raw write() returned invalid length 96 (should have been between 0 and 48)
@@ -52,13 +51,11 @@ def run_training():
     # data=batches_outputs[1:7]
     # print(len(data))
     del ssqdata
-    input_data = tf.placeholder(tf.float32, [FLAGS.batch_size, 1,7,1])
-    input_data = tf.placeholder(tf.float32, [FLAGS.batch_size, 1,1,1])
-    logits = inference(input_data, 10, reuse=False,output_num=128)
+    input_data = tf.placeholder(tf.float32, [FLAGS.batch_size, 1])
 
     # print(tf.shape(input_data))
     output_targets = tf.placeholder(tf.int32, [FLAGS.batch_size, None])
-    end_points = rnn_model(model='lstm', input_data=logits, output_data=output_targets, vocab_size=33,
+    end_points = rnn_model(model='lstm', input_data=input_data, output_data=output_targets, vocab_size=33,
                            rnn_size=128, num_layers=3, batch_size=FLAGS.batch_size, learning_rate=FLAGS.learning_rate)
     # end_points = rnn_model(model='lstm', input_data=input_data, output_data=output_targets, vocab_size=len(
     #     vocabularies), rnn_size=128, num_layers=2, batch_size=64, learning_rate=FLAGS.learning_rate)
