@@ -1,4 +1,6 @@
 # 利用神经网络和LSTM预测双色球(How To predict the China's Union Lotto with Neural Network and LSTM)
+## 2018/3/29更新
+尝试用CNN和LSTM做预测。CNN用于提取特征，采用的是resnet。目前最好的结果是五等奖（中4个红号）。
 ## 背景(Background)
 ------
 这个项目是通过结合神经网络和Long Short-Term Memory(LSTM)完成双色球预测。关于双色球的介绍，在此处不在赘述（参见[网站](https://baike.baidu.com/item/中国福利彩票双色球/8676030?fr=aladdin&fromid=75279&fromtitle=%E5%8F%8C%E8%89%B2%E7%90%83)）。该项目以真实的双色球开奖结果作为输入（7个数值，其中前6个表示红号，最后一个表示蓝号），输出预测结果（输出仍为7个数值，其中前6个表示红号，最后一个表示蓝号）。目前该项目还处于开发中。<br><br>
@@ -24,7 +26,7 @@
 ## 项目文件(File contents)
 -----
 
-1.` poems` : ` poems`文件夹包含两个模型文件，其中`model.py`是本项目所使用的模型文件;<br>
+1.` poems` : ` poems`文件夹包含3个模型文件，其中`model.py`是本项目所使用的模型文件;其中`resnet.py`定义的是resnet模型;<br>
 2.`ssq.py `: 该文件用于训练模型;<br>
 3.`ssq.xls` : 该文件储存了历次双色球的开奖和中奖数据，需要利用宏进行数据更新;<br>
 4.`ssq_data.py ` : 读取`ssq.xls`文件中的数据并变成所需要的形式.<br>
