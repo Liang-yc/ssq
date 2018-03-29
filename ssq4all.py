@@ -24,14 +24,14 @@ from poems.resnet import *
 from poems.poems import process_poems, generate_batch
 from ssq_data import *
 # for Windows10：OSError: raw write() returned invalid length 96 (should have been between 0 and 48)
-import win_unicode_console
-win_unicode_console.enable()
+# import win_unicode_console
+# win_unicode_console.enable()
 tf.app.flags.DEFINE_integer('batch_size', 2214, 'batch size.')
 tf.app.flags.DEFINE_float('learning_rate', 0.0001, 'learning rate.')
-tf.app.flags.DEFINE_string('model_dir', os.path.abspath('./model4red'), 'model save path.')
+tf.app.flags.DEFINE_string('model_dir', os.path.abspath('./model4all'), 'model save path.')
 tf.app.flags.DEFINE_string('file_path', os.path.abspath('./data/poems.txt'), 'file name of poems.')
 tf.app.flags.DEFINE_string('model_prefix', 'poems', 'model save prefix.')
-tf.app.flags.DEFINE_integer('epochs', 350000, 'train how many epochs.')
+tf.app.flags.DEFINE_integer('epochs', 500000, 'train how many epochs.')
 
 FLAGS = tf.app.flags.FLAGS
 
@@ -42,11 +42,12 @@ def run_training():
     #
     # poems_vector, word_to_int, vocabularies = process_poems(FLAGS.file_path)
     # batches_inputs, batches_outputs = generate_batch(FLAGS.batch_size, poems_vector, word_to_int)
-    ssqdata=get_red161(use_resnet=True)
+    ssqdata=get_exl_data(random_order=False,use_resnet=True)
     # print(ssqdata[len(ssqdata)-1])
     batches_inputs=ssqdata[0:(len(ssqdata)-1)]
-    ssqdata=get_red(random_order=True)
+    ssqdata=get_exl_data(random_order=False,use_resnet=False)
     batches_outputs = ssqdata[1:(len(ssqdata))]
+    FLAGS.batch_size=len(batches_inputs)
     # print(np.shape(batches_outputs))
     # data=batches_outputs[1:7]
     # print(len(data))
@@ -56,8 +57,8 @@ def run_training():
 
     # print(tf.shape(input_data))
     output_targets = tf.placeholder(tf.int32, [FLAGS.batch_size, None])
-    end_points = rnn_model(model='lstm', input_data=logits, output_data=output_targets, vocab_size=33,output_num=6,
-                           rnn_size=128, num_layers=3, batch_size=FLAGS.batch_size, learning_rate=FLAGS.learning_rate)
+    end_points = rnn_model(model='lstm', input_data=logits, output_data=output_targets, vocab_size=33+16,output_num=7,
+                           rnn_size=128, num_layers=7, batch_size=FLAGS.batch_size, learning_rate=FLAGS.learning_rate)
     # end_points = rnn_model(model='lstm', input_data=input_data, output_data=output_targets, vocab_size=len(
     #     vocabularies), rnn_size=128, num_layers=2, batch_size=64, learning_rate=FLAGS.learning_rate)
 
@@ -69,15 +70,15 @@ def run_training():
         sess.run(init_op)
 
         start_epoch = 0
-        # saver.restore(sess, "E:/workplace/tensorflow_poems-master/model4red/poems-172725")
-        checkpoint = tf.train.latest_checkpoint(FLAGS.model_dir)
-        if checkpoint:
-            saver.restore(sess, checkpoint)
-            print("## restore from the checkpoint {0}".format(checkpoint))
-            start_epoch += int(checkpoint.split('-')[-1])
+        saver.restore(sess, "F:/tensorflow_poems-master/model4all/poems-451333")
+        # checkpoint = tf.train.latest_checkpoint(FLAGS.model_dir)
+        # if checkpoint:
+        #     saver.restore(sess, checkpoint)
+        #     print("## restore from the checkpoint {0}".format(checkpoint))
+        #     start_epoch += int(checkpoint.split('-')[-1])
         print('## start training...')
         try:
-            for epoch in range(start_epoch, FLAGS.epochs):
+            for epoch in range(start_epoch+451333, FLAGS.epochs):
                 n = 0
                 # n_chunk = len(poems_vector) // FLAGS.batch_size
                 # n_chunk = len(batches_inputs) // FLAGS.batch_size
@@ -103,8 +104,9 @@ def run_training():
                     # ], feed_dict={input_data: batches_inputs, output_targets: batches_outputs})
                     n += 1
                     print('Epoch: %d, batch: %d, training loss: %.6f' % (epoch, batch, loss))
-                if epoch % 50000 == 0:
+                if epoch % 50000 == 0 or loss<0.0002:
                     saver.save(sess, os.path.join(FLAGS.model_dir, FLAGS.model_prefix), global_step=epoch)
+                    break
         except KeyboardInterrupt:
             print('## Interrupt manually, try saving checkpoint for now...')
             saver.save(sess, os.path.join(FLAGS.model_dir, FLAGS.model_prefix), global_step=epoch)
