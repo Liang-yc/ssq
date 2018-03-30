@@ -53,7 +53,7 @@ def run_training():
     # print(len(data))
     del ssqdata
     input_data = tf.placeholder(tf.float32, [FLAGS.batch_size, 1,7,1])
-    logits = inference(input_data, 10, reuse=False,output_num=128)
+    logits = inference(input_data, 2, reuse=False,output_num=128)
 
     # print(tf.shape(input_data))
     output_targets = tf.placeholder(tf.int32, [FLAGS.batch_size, None])
@@ -70,12 +70,11 @@ def run_training():
         sess.run(init_op)
 
         start_epoch = 0
-        saver.restore(sess, "F:/tensorflow_poems-master/model4all/poems-451333")
-        # checkpoint = tf.train.latest_checkpoint(FLAGS.model_dir)
-        # if checkpoint:
-        #     saver.restore(sess, checkpoint)
-        #     print("## restore from the checkpoint {0}".format(checkpoint))
-        #     start_epoch += int(checkpoint.split('-')[-1])
+        checkpoint = tf.train.latest_checkpoint(FLAGS.model_dir)
+        if checkpoint:
+            saver.restore(sess, checkpoint)
+            print("## restore from the checkpoint {0}".format(checkpoint))
+            start_epoch += int(checkpoint.split('-')[-1])
         print('## start training...')
         try:
             for epoch in range(start_epoch+451333, FLAGS.epochs):
