@@ -36,14 +36,17 @@ def rnn_model(model, input_data, output_data, vocab_size, rnn_size=128, num_laye
     """
     end_points = {}
 
+
     if model == 'rnn':
         cell_fun = tf.contrib.rnn.BasicRNNCell
+        cell = cell_fun(rnn_size)
     elif model == 'gru':
         cell_fun = tf.contrib.rnn.GRUCell
+        cell = cell_fun(rnn_size)
     elif model == 'lstm':
         cell_fun = tf.contrib.rnn.BasicLSTMCell
-
-    cell = cell_fun(rnn_size, state_is_tuple=True)
+        cell = cell_fun(rnn_size, state_is_tuple=True)
+        
     cell = tf.contrib.rnn.MultiRNNCell([cell] * num_layers, state_is_tuple=True)
 
     if output_data is not None:
