@@ -104,9 +104,8 @@ def run_training():
                     # ], feed_dict={input_data: batches_inputs, output_targets: batches_outputs})
                     n += 1
                     print('Epoch: %d, batch: %d, training loss: %.6f' % (epoch, batch, loss))
-                if epoch % 50000 == 0 or loss<0.0002:
+                if epoch % 50000 == 0:
                     saver.save(sess, os.path.join(FLAGS.model_dir, FLAGS.model_prefix), global_step=epoch)
-                    break
         except KeyboardInterrupt:
             print('## Interrupt manually, try saving checkpoint for now...')
             saver.save(sess, os.path.join(FLAGS.model_dir, FLAGS.model_prefix), global_step=epoch)
