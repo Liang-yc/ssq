@@ -111,13 +111,14 @@ def rnn_model(model, input_data, output_data, vocab_size, rnn_size=128, num_laye
         labels = tf.one_hot(tf.reshape(output_data, [-1]), depth=vocab_size + 1)
         # should be [?, vocab_size+1]
         loss = tf.nn.softmax_cross_entropy_with_logits(labels=labels, logits=logits)
-        regularizers = (tf.nn.l2_loss(fc1_weights) + tf.nn.l2_loss(fc1_biases) +
-                        tf.nn.l2_loss(fc2_weights) + tf.nn.l2_loss(fc2_biases)+
-                        tf.nn.l2_loss(fc3_weights) + tf.nn.l2_loss(fc3_biases)+
-                        tf.nn.l2_loss(fc4_weights) + tf.nn.l2_loss(fc4_biases))
-        total_loss+=5e-4 * regularizers
+
         # loss shape should be [?, vocab_size+1]
         total_loss = tf.reduce_mean(loss)
+        regularizers = (tf.nn.l2_loss(fc1_weights) + tf.nn.l2_loss(fc1_biases) +
+                tf.nn.l2_loss(fc2_weights) + tf.nn.l2_loss(fc2_biases)+
+                tf.nn.l2_loss(fc3_weights) + tf.nn.l2_loss(fc3_biases)+
+                tf.nn.l2_loss(fc4_weights) + tf.nn.l2_loss(fc4_biases))
+        total_loss+=5e-4 * regularizers
         train_op = tf.train.AdamOptimizer(learning_rate).minimize(total_loss)
 
         end_points['initial_state'] = initial_state
