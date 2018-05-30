@@ -21,7 +21,7 @@ import numpy as np
 
 
 def rnn_model(model, input_data, output_data, vocab_size, rnn_size=128, num_layers=2, batch_size=64,
-              output_num=1,learning_rate=0.01,use_cnn=True):
+              input_num=128,output_num=1,learning_rate=0.01,use_cnn=True):
     """
     construct rnn seq2seq model.
     :param model: model class
@@ -56,7 +56,7 @@ def rnn_model(model, input_data, output_data, vocab_size, rnn_size=128, num_laye
     if use_cnn:
         with tf.name_scope('fc1'):
             fc1_weights = tf.Variable(  # fully connected, depth 512.
-                tf.truncated_normal([128, 128],
+                tf.truncated_normal([input_num, 128],
                                     # mean=1.0,
                                     stddev=0.1,
                                     dtype=tf.float32))
