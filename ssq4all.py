@@ -77,7 +77,7 @@ def run_training():
             start_epoch += int(checkpoint.split('-')[-1])
         print('## start training...')
         try:
-            for epoch in range(start_epoch+451333, FLAGS.epochs):
+            for epoch in range(start_epoch, FLAGS.epochs):
                 n = 0
                 # n_chunk = len(poems_vector) // FLAGS.batch_size
                 # n_chunk = len(batches_inputs) // FLAGS.batch_size

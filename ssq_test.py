@@ -43,7 +43,7 @@ def gen_poem():
     input_data = tf.placeholder(tf.int32, [batch_size, None])
 
     end_points = rnn_model(model='lstm', input_data=input_data, output_data=None, vocab_size=33+16,
-                           rnn_size=128, output_num=7,num_layers=7, batch_size=1, learning_rate=0.01)
+                           rnn_size=128, output_num=7,input_num=7,num_layers=7, batch_size=1, learning_rate=0.01)
 
     saver = tf.train.Saver(tf.global_variables())
     init_op = tf.group(tf.global_variables_initializer(), tf.local_variables_initializer())
@@ -60,7 +60,7 @@ def gen_poem():
                                          feed_dict={input_data: x})
         poem_=np.argmax(np.array(predict),axis=1)
         results=poem_+np.asarray([1,1,1,1,1,1,-32])
-        print("output:"%results)
+        print("output:%s"%results)
         return poem_
 
 

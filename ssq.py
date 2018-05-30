@@ -49,7 +49,7 @@ def run_training():
     # print(tf.shape(input_data))
     output_targets = tf.placeholder(tf.int32, [FLAGS.batch_size, None])
     end_points = rnn_model(model='lstm', input_data=input_data, output_data=output_targets, vocab_size=33+16,
-                           output_num=7,
+                           output_num=7,input_num=7,
                            rnn_size=128, num_layers=7, batch_size=FLAGS.batch_size, learning_rate=FLAGS.learning_rate)
     # end_points = rnn_model(model='lstm', input_data=input_data, output_data=output_targets, vocab_size=len(
     #     vocabularies), rnn_size=128, num_layers=2, batch_size=64, learning_rate=FLAGS.learning_rate)

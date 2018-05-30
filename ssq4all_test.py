@@ -41,7 +41,7 @@ def gen_poem():
     batch_size = 1
     print('## loading model from %s' % model_dir)
     input_data = tf.placeholder(tf.float32, [1, 1,7,1])
-    logits = inference(input_data, 10, reuse=False,output_num=128)
+    logits = inference(input_data, 2, reuse=False,output_num=128)
 
     # print(tf.shape(input_data))
     output_targets = tf.placeholder(tf.int32, [1, None])
@@ -59,9 +59,9 @@ def gen_poem():
     with tf.Session() as sess:
         sess.run(init_op)
 
-        # checkpoint = tf.train.latest_checkpoint('./model4all/')
-        # saver.restore(sess, checkpoint)
-        saver.restore(sess, "F:/tensorflow_poems-master/model4all/poems-401713")
+        checkpoint = tf.train.latest_checkpoint('./model4all/')
+        saver.restore(sess, checkpoint)
+        # saver.restore(sess, "F:/tensorflow_poems-master/model4all/poems-401713")
         ssqdata = get_exl_data(random_order=True,use_resnet=True)
         # x = np.array([list(map(word_int_map.get, start_token))])
         x=[ssqdata[len(ssqdata)-1]]
