@@ -41,7 +41,7 @@ def gen_poem():
     batch_size = 1
     print('## loading model from %s' % model_dir)
     input_data = tf.placeholder(tf.float32, [1, 1,7,1])
-    logits = inference(input_data, 10, reuse=False,output_num=128)
+    logits = inference(input_data, 1, reuse=False,output_num=128)
 
     # print(tf.shape(input_data))
     output_targets = tf.placeholder(tf.int32, [1, None])
@@ -59,19 +59,19 @@ def gen_poem():
     with tf.Session() as sess:
         sess.run(init_op)
 
-        checkpoint = tf.train.latest_checkpoint('./model4all/')
+        checkpoint = tf.train.latest_checkpoint('./dlt_model/')
         saver.restore(sess, checkpoint)
         # saver.restore(sess, "E:/workplace/tensorflow_poems-master/model4red/poems-150000")
-        ssqdata = get_dlt_data(random_order=True,use_resnet=True)
+        ssqdata = get_dlt_data(random_order=False,use_resnet=True)
         # x = np.array([list(map(word_int_map.get, start_token))])
-        x=[ssqdata[len(ssqdata)-1-1]]
-        print("input: %s"%(x+np.asarray([[[[1],[1],[1],[1],[1],[1],[-32]]]])))
+        x=[ssqdata[len(ssqdata)-1]]
+        print("input: %s"%(x+np.asarray([[[[1],[1],[1],[1],[1],[-34],[-34]]]])))
         [predict, last_state] = sess.run([end_points['prediction'], end_points['last_state']],
                                          feed_dict={input_data: x})
         poem_=np.argmax(np.array(predict),axis=1)
         sorted_result = np.argsort(np.array(predict), axis=1)
-        results=poem_+np.asarray([1,1,1,1,1,1,-32])
-        print(sorted_result)
+        results=poem_+np.asarray([1,1,1,1,1,-34,-34])
+        # print(sorted_result)
         print("output: %s"%results)
         return poem_
 
@@ -100,7 +100,7 @@ def gen_blue():
         checkpoint = tf.train.latest_checkpoint('./model4all/')
         saver.restore(sess, checkpoint)
         # saver.restore(sess, "E:/workplace/tensorflow_poems-master/model4blue/poems-84201")
-        ssqdata = get_exl_data(random_order=True,use_resnet=True)
+        ssqdata = get_exl_data(random_order=False,use_resnet=True)
         # x = np.array([list(map(word_int_map.get, start_token))])
         x=[ssqdata[len(ssqdata)-1]]
         print("input: %s"%(x))

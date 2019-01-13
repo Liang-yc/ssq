@@ -57,7 +57,7 @@ def run_training():
     # print(len(data))
     del ssqdata
     input_data = tf.placeholder(tf.float32, [FLAGS.batch_size, 1,7,1])
-    logits = inference(input_data, 10, reuse=False,output_num=128)
+    logits = inference(input_data, 1, reuse=False,output_num=128)
 
     # print(tf.shape(input_data))
     output_targets = tf.placeholder(tf.int32, [FLAGS.batch_size, None])
@@ -107,6 +107,7 @@ def run_training():
                     ], feed_dict={input_data: inputdata, output_targets: outputdata})
                     # ], feed_dict={input_data: batches_inputs, output_targets: batches_outputs})
                     n += 1
+                if epoch % 1000 == 0:
                     print('Epoch: %d, batch: %d, training loss: %.6f' % (epoch, batch, loss))
                 if epoch % 50000 == 0:
                     saver.save(sess, os.path.join(FLAGS.model_dir, FLAGS.model_prefix), global_step=epoch)
@@ -114,6 +115,7 @@ def run_training():
             print('## Interrupt manually, try saving checkpoint for now...')
             saver.save(sess, os.path.join(FLAGS.model_dir, FLAGS.model_prefix), global_step=epoch)
             print('## Last epoch were saved, next time will start from epoch {}.'.format(epoch))
+        saver.save(sess, os.path.join(FLAGS.model_dir, FLAGS.model_prefix), global_step=epoch)
 
 
 def main(_):
