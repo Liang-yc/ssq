@@ -113,9 +113,9 @@ def run_training():
                     saver.save(sess, os.path.join(FLAGS.model_dir, FLAGS.model_prefix), global_step=epoch)
         except KeyboardInterrupt:
             print('## Interrupt manually, try saving checkpoint for now...')
+        finally:
             saver.save(sess, os.path.join(FLAGS.model_dir, FLAGS.model_prefix), global_step=epoch)
             print('## Last epoch were saved, next time will start from epoch {}.'.format(epoch))
-        saver.save(sess, os.path.join(FLAGS.model_dir, FLAGS.model_prefix), global_step=epoch)
 
 
 def main(_):
