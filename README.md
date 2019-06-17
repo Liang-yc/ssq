@@ -1,5 +1,7 @@
 # 利用神经网络和LSTM预测双色球(How To predict the China's Union Lotto with Neural Network and LSTM)
 
+## 2019/6/18更新
+利用最近几次的双色球结果和奖池情况做预测，训练和测试见`ssq4all_v4.py`和`ssq4all_test_v4.py`。
 ## 2018/9/16更新
 添加了大乐透的训练测试文件。
 ## 2018/5/30更新
