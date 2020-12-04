@@ -12,15 +12,15 @@ from ssq_data import *
 # for Windows10：OSError: raw write() returned invalid length 96 (should have been between 0 and 48)
 import win_unicode_console
 win_unicode_console.enable()
-tf.app.flags.DEFINE_integer('batch_size', 2214, 'batch size.')
-tf.app.flags.DEFINE_float('learning_rate', 0.0001, 'learning rate.')
-tf.app.flags.DEFINE_string('model_dir', os.path.abspath('./model4all_v4'), 'model save path.')
-tf.app.flags.DEFINE_string('file_path', os.path.abspath('./data/poems.txt'), 'file name of poems.')
-tf.app.flags.DEFINE_string('model_prefix', 'poems', 'model save prefix.')
-tf.app.flags.DEFINE_integer('epochs', 2000001, 'train how many epochs.')
-tf.app.flags.DEFINE_integer('times', 10, 'train how many epochs.')
-FLAGS = tf.app.flags.FLAGS
-
+tf.compat.v1.app.flags.DEFINE_integer('batch_size', 2214, 'batch size.')
+tf.compat.v1.app.flags.DEFINE_float('learning_rate', 0.0001, 'learning rate.')
+tf.compat.v1.app.flags.DEFINE_string('model_dir', './model4all_v4', 'model save path.')
+tf.compat.v1.app.flags.DEFINE_string('file_path', os.path.abspath('./data/poems.txt'), 'file name of poems.')
+tf.compat.v1.app.flags.DEFINE_string('model_prefix', 'poems', 'model save prefix.')
+tf.compat.v1.app.flags.DEFINE_integer('epochs', 2000001, 'train how many epochs.')
+tf.compat.v1.app.flags.DEFINE_integer('times', 10, 'train how many epochs.')
+FLAGS = tf.compat.v1.app.flags.FLAGS
+tf.compat.v1.disable_eager_execution()
 
 def run_training():
     # if not os.path.exists(FLAGS.model_dir):
@@ -44,19 +44,19 @@ def run_training():
     # data=batches_outputs[1:7]
     # print(len(data))
     del ssqdata
-    input_data = tf.placeholder(tf.float32, [FLAGS.batch_size, FLAGS.times,7+8,1])
+    input_data = tf.compat.v1.placeholder(tf.float32, [FLAGS.batch_size, FLAGS.times,7+8,1])
     logits = inference(input_data, 1, reuse=False,output_num=128)
 
     # print(tf.shape(input_data))
-    output_targets = tf.placeholder(tf.int32, [FLAGS.batch_size, None])
-    end_points = rnn_model(model='lstm', input_data=logits, output_data=output_targets, vocab_size=35+12,output_num=7,
+    output_targets = tf.compat.v1.placeholder(tf.int32, [FLAGS.batch_size, None])
+    end_points = rnn_model(model='lstm', input_data=logits, output_data=output_targets, vocab_size=35+12+1,output_num=7,
                            rnn_size=128, num_layers=7, batch_size=FLAGS.batch_size, learning_rate=FLAGS.learning_rate)
     # end_points = rnn_model(model='lstm', input_data=input_data, output_data=output_targets, vocab_size=len(
     #     vocabularies), rnn_size=128, num_layers=2, batch_size=64, learning_rate=FLAGS.learning_rate)
 
-    saver = tf.train.Saver(tf.global_variables())
-    init_op = tf.group(tf.global_variables_initializer(), tf.local_variables_initializer())
-    with tf.Session() as sess:
+    saver = tf.compat.v1.train.Saver(tf.compat.v1.global_variables())
+    init_op = tf.group(tf.compat.v1.global_variables_initializer(), tf.compat.v1.local_variables_initializer())
+    with tf.compat.v1.Session() as sess:
         # sess = tf_debug.LocalCLIDebugWrapperSession(sess=sess)
         # sess.add_tensor_filter("has_inf_or_nan", tf_debug.has_inf_or_nan)
         sess.run(init_op)
@@ -118,4 +118,4 @@ def main(_):
 
 
 if __name__ == '__main__':
-    tf.app.run()
+    tf.compat.v1.app.run()

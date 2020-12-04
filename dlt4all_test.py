@@ -40,11 +40,11 @@ def to_word(predict, vocabs):
 def gen_poem():
     batch_size = 1
     print('## loading model from %s' % model_dir)
-    input_data = tf.placeholder(tf.float32, [1, 1,7,1])
+    input_data = tf.compat.v1.placeholder(tf.float32, [1, 1,7,1])
     logits = inference(input_data, 1, reuse=False,output_num=128)
 
     # print(tf.shape(input_data))
-    output_targets = tf.placeholder(tf.int32, [1, None])
+    output_targets = tf.compat.v1.placeholder(tf.int32, [1, None])
     end_points = rnn_model(model='lstm', input_data=logits, output_data=output_targets, vocab_size=35+12,
                            output_num=7,
                            rnn_size=128, num_layers=7, batch_size=1, learning_rate=0.01)
@@ -54,9 +54,9 @@ def gen_poem():
     # end_points = rnn_model(model='lstm', input_data=input_data, output_data=None, vocab_size=33,
     #                        rnn_size=128, num_layers=7, batch_size=1, learning_rate=0.01)
 
-    saver = tf.train.Saver(tf.global_variables())
-    init_op = tf.group(tf.global_variables_initializer(), tf.local_variables_initializer())
-    with tf.Session() as sess:
+    saver = tf.compat.v1.train.Saver(tf.compat.v1.global_variables())
+    init_op = tf.group(tf.compat.v1.global_variables_initializer(), tf.compat.v1.local_variables_initializer())
+    with tf.compat.v1.Session() as sess:
         sess.run(init_op)
 
         checkpoint = tf.train.latest_checkpoint('./dlt_model/')
@@ -65,24 +65,24 @@ def gen_poem():
         ssqdata = get_dlt_data(random_order=False,use_resnet=True)
         # x = np.array([list(map(word_int_map.get, start_token))])
         x=[ssqdata[len(ssqdata)-1]]
-        print("input: %s"%(x+np.asarray([[[[1],[1],[1],[1],[1],[-34],[-34]]]])))
+        print("input: %s"%(x+np.asarray([[[[1],[1],[1],[1],[1],[1],[-32]]]])))
         [predict, last_state] = sess.run([end_points['prediction'], end_points['last_state']],
                                          feed_dict={input_data: x})
         poem_=np.argmax(np.array(predict),axis=1)
         sorted_result = np.argsort(np.array(predict), axis=1)
-        results=poem_+np.asarray([1,1,1,1,1,-34,-34])
-        # print(sorted_result)
+        results=poem_+np.asarray([1,1,1,1,1,1,-32])
+        print(sorted_result)
         print("output: %s"%results)
         return poem_
 
 def gen_blue():
     batch_size = 1
     print('## loading model from %s' % model_dir)
-    input_data = tf.placeholder(tf.float32, [1, 1,7,1])
+    input_data = tf.compat.v1.placeholder(tf.float32, [1, 1,7,1])
     logits = inference(input_data, 10, reuse=False,output_num=128)
 
     # print(tf.shape(input_data))
-    output_targets = tf.placeholder(tf.int32, [1, None])
+    output_targets = tf.compat.v1.placeholder(tf.int32, [1, None])
     end_points = rnn_model(model='lstm', input_data=logits, output_data=output_targets, vocab_size=33,
                            output_num=1,
                            rnn_size=128, num_layers=3, batch_size=1, learning_rate=0.01)
@@ -92,9 +92,9 @@ def gen_blue():
     # end_points = rnn_model(model='lstm', input_data=input_data, output_data=None, vocab_size=33,
     #                        rnn_size=128, num_layers=7, batch_size=1, learning_rate=0.01)
 
-    saver = tf.train.Saver(tf.global_variables())
-    init_op = tf.group(tf.global_variables_initializer(), tf.local_variables_initializer())
-    with tf.Session() as sess:
+    saver = tf.compat.v1.train.Saver(tf.compat.v1.global_variables())
+    init_op = tf.group(tf.compat.v1.global_variables_initializer(), tf.compat.v1.local_variables_initializer())
+    with tf.compat.v1.Session() as sess:
         sess.run(init_op)
 
         checkpoint = tf.train.latest_checkpoint('./model4all/')

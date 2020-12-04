@@ -22,11 +22,14 @@ from poems.resnet import *
 from poems.poems import process_poems
 import numpy as np
 from ssq_data import *
+import os
+os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 start_token = 'B'
 end_token = 'E'
 model_dir = './model4all/'
 corpus_file = './data/poems.txt'
-
+tf.compat.v1.disable_eager_execution()
 
 def to_word(predict, vocabs):
     t = np.cumsum(predict)
@@ -40,82 +43,43 @@ def to_word(predict, vocabs):
 def gen_poem():
     batch_size = 1
     print('## loading model from %s' % model_dir)
-    input_data = tf.placeholder(tf.float32, [1, 1,7,1])
-    logits = inference(input_data, 2, reuse=False,output_num=128)
+    input_data = tf.compat.v1.placeholder(tf.float32, [0, 0,7+6,0])
+    logits = inference(input_data, 0, reuse=False,output_num=128)
 
     # print(tf.shape(input_data))
-    output_targets = tf.placeholder(tf.int32, [1, None])
-    end_points = rnn_model(model='lstm', input_data=logits, output_data=output_targets, vocab_size=33+16,
+    output_targets = tf.compat.v1.placeholder(tf.int32, [0, None])
+    end_points = rnn_model(model='lstm', input_data=logits, output_data=output_targets, vocab_size=35+12,
                            output_num=7,
-                           rnn_size=128, num_layers=7, batch_size=1, learning_rate=0.01)
+                           rnn_size=128, num_layers=7, batch_size=0, learning_rate=0.01)
 
     # input_data = tf.placeholder(tf.int32, [batch_size, None])
     #
     # end_points = rnn_model(model='lstm', input_data=input_data, output_data=None, vocab_size=33,
-    #                        rnn_size=128, num_layers=7, batch_size=1, learning_rate=0.01)
+    #                        rnn_size=128, num_layers=7, batch_size=0, learning_rate=0.01)
 
-    saver = tf.train.Saver(tf.global_variables())
-    init_op = tf.group(tf.global_variables_initializer(), tf.local_variables_initializer())
-    with tf.Session() as sess:
+    saver = tf.compat.v1.train.Saver(tf.compat.v1.global_variables())
+    init_op = tf.group(tf.compat.v1.global_variables_initializer(), tf.compat.v1.local_variables_initializer())
+    with tf.compat.v1.Session() as sess:
         sess.run(init_op)
 
         checkpoint = tf.train.latest_checkpoint('./model4all/')
         saver.restore(sess, checkpoint)
-        # saver.restore(sess, "F:/tensorflow_poems-master/model4all/poems-401713")
-        ssqdata = get_exl_data(random_order=True,use_resnet=True)
+        # saver.restore(sess, "E:/workplace/tensorflow_poems-master/model4all/poems-1830736")
+        # ssqdata = get_exl_data(random_order=True,use_resnet=True)
+        ssqdata = get_exl_data_v2(random_order=False, use_resnet=True)
         # x = np.array([list(map(word_int_map.get, start_token))])
         x=[ssqdata[len(ssqdata)-1]]
-        print("input: %s"%(x+np.asarray([[[[1],[1],[1],[1],[1],[1],[-32]]]])))
+        print("input: %s"%(x+np.asarray([[[[0],[0],[0],[0],[0],[0],[-32],[0],[0],[0],[0],[0],[0]]]])))
         [predict, last_state] = sess.run([end_points['prediction'], end_points['last_state']],
                                          feed_dict={input_data: x})
         poem_=np.argmax(np.array(predict),axis=1)
         sorted_result = np.argsort(np.array(predict), axis=1)
-        results=poem_+np.asarray([1,1,1,1,1,1,-32])
+        results=poem_+np.asarray([0,0,0,0,0,0,-32])
         print(sorted_result)
         print("output: %s"%results)
-        poem_=np.argmin(np.array(predict),axis=1)
-        results=poem_+np.asarray([1,1,1,1,1,1,-32])
-        print("min output:%s"%results)
         return poem_
 
-def gen_blue():
-    batch_size = 1
-    print('## loading model from %s' % model_dir)
-    input_data = tf.placeholder(tf.float32, [1, 1,7,1])
-    logits = inference(input_data, 10, reuse=False,output_num=128)
 
-    # print(tf.shape(input_data))
-    output_targets = tf.placeholder(tf.int32, [1, None])
-    end_points = rnn_model(model='lstm', input_data=logits, output_data=output_targets, vocab_size=33,
-                           output_num=1,
-                           rnn_size=128, num_layers=3, batch_size=1, learning_rate=0.01)
-
-    # input_data = tf.placeholder(tf.int32, [batch_size, None])
-    #
-    # end_points = rnn_model(model='lstm', input_data=input_data, output_data=None, vocab_size=33,
-    #                        rnn_size=128, num_layers=7, batch_size=1, learning_rate=0.01)
-
-    saver = tf.train.Saver(tf.global_variables())
-    init_op = tf.group(tf.global_variables_initializer(), tf.local_variables_initializer())
-    with tf.Session() as sess:
-        sess.run(init_op)
-
-        checkpoint = tf.train.latest_checkpoint('./model4all/')
-        saver.restore(sess, checkpoint)
-        # saver.restore(sess, "E:/workplace/tensorflow_poems-master/model4blue/poems-84201")
-        ssqdata = get_exl_data(random_order=True,use_resnet=True)
-        # x = np.array([list(map(word_int_map.get, start_token))])
-        x=[ssqdata[len(ssqdata)-1]]
-
-        print("input: %s"%(x))
-        [predict, last_state] = sess.run([end_points['prediction'], end_points['last_state']],
-                                         feed_dict={input_data: x})
-        poem_=np.argmax(np.array(predict),axis=1)
-        sorted_result=np.argsort(np.array(predict),axis=1)
-        results=poem_+np.ones(1)
-        print(results)
-        print(sorted_result)
-        return poem_
 
 
 if __name__ == '__main__':
