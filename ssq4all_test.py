@@ -48,7 +48,7 @@ def gen_poem():
 
     # print(tf.shape(input_data))
     output_targets = tf.compat.v1.placeholder(tf.int32, [0, None])
-    end_points = rnn_model(model='lstm', input_data=logits, output_data=output_targets, vocab_size=35+12,
+    end_points = rnn_model(model='lstm', input_data=logits, output_data=output_targets, vocab_size=33+16,
                            output_num=7,
                            rnn_size=128, num_layers=7, batch_size=0, learning_rate=0.01)
 
