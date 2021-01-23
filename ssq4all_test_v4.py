@@ -44,13 +44,13 @@ def to_word(predict, vocabs):
 def gen_poem():
     batch_size = 1
     print('## loading model from %s' % model_dir)
-    input_data = tf.compat.v1.placeholder(tf.float32, [0, 10,7+8,0])
+    input_data = tf.compat.v1.placeholder(tf.float32, [1, 10,7+8,1])
     logits = inference(input_data, 0, reuse=False,output_num=128)
 
     # print(tf.shape(input_data))
-    output_targets = tf.compat.v1.placeholder(tf.int32, [0, None])
+    output_targets = tf.compat.v1.placeholder(tf.int32, [1, None])
     end_points = rnn_model(model='lstm', input_data=logits, output_data=output_targets, vocab_size=33+16,output_num=7,
-                           rnn_size=128, num_layers=7, batch_size=0, learning_rate=0.001)
+                           rnn_size=128, num_layers=7, batch_size=1, learning_rate=0.001)
 
     # input_data = tf.placeholder(tf.int32, [batch_size, None])
     #
