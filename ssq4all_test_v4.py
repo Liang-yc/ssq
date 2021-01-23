@@ -45,7 +45,7 @@ def gen_poem():
     batch_size = 1
     print('## loading model from %s' % model_dir)
     input_data = tf.compat.v1.placeholder(tf.float32, [1, 10,7+8,1])
-    logits = inference(input_data, 0, reuse=False,output_num=128)
+    logits = inference(input_data, 1, reuse=False,output_num=128)
 
     # print(tf.shape(input_data))
     output_targets = tf.compat.v1.placeholder(tf.int32, [1, None])
