@@ -65,12 +65,12 @@ def gen_poem():
         ssqdata = get_dlt_data(random_order=False,use_resnet=True)
         # x = np.array([list(map(word_int_map.get, start_token))])
         x=[ssqdata[len(ssqdata)-1]]
-        print("input: %s"%(x+np.asarray([[[[1],[1],[1],[1],[1],[1],[-32]]]])))
+        print("input: %s"%(x+np.asarray([[[[1],[1],[1],[1],[1],[-34],[-34]]]])))
         [predict, last_state] = sess.run([end_points['prediction'], end_points['last_state']],
                                          feed_dict={input_data: x})
         poem_=np.argmax(np.array(predict),axis=1)
         sorted_result = np.argsort(np.array(predict), axis=1)
-        results=poem_+np.asarray([1,1,1,1,1,1,-32])
+        results=poem_+np.asarray([1,1,1,1,1,-34,-34])
         print(sorted_result)
         print("output: %s"%results)
         return poem_
