@@ -23,8 +23,8 @@ FLAGS = tf.app.flags.FLAGS
 
 
 def run_training():
-    # if not os.path.exists(FLAGS.model_dir):
-    #     os.makedirs(FLAGS.model_dir)
+    if not os.path.exists(FLAGS.model_dir):
+        os.makedirs(FLAGS.model_dir)
     #
     # poems_vector, word_to_int, vocabularies = process_poems(FLAGS.file_path)
     # batches_inputs, batches_outputs = generate_batch(FLAGS.batch_size, poems_vector, word_to_int)
